@@ -48,3 +48,5 @@ end)
 --   -- gcc
 --   vim.fn.chansend(job_id, { "echo 'hi'\r\n" })
 -- end)
+--
+vim.keymap.set("n", "-", "<cmd>Oil<CR>")

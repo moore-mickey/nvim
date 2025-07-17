@@ -23,9 +23,21 @@ return {
 
       lspconfig.clangd.setup({
         capabilities = capabilities,
-        cmd = { 'clangd', '--background-index', '--clang-tidy', '--log=verbose' },
+        cmd = {
+          'clangd',
+          '--background-index',
+          '--clang-tidy',
+          '--log=verbose',
+          '--query-driver=',
+          '--query-driver=arm-none-eabi-gcc'
+        },
+        root_markers = {
+          '.clangd',
+          'compile_commands.json'
+        },
+        filetypes = { 'c', 'cpp', 'h', 'hpp' },
         init_options = {
-          fallbackFlags = { '--std=c++17' },
+          fallbackFlags = { '-std=c++17' },
         },
       })
 
@@ -37,6 +49,17 @@ return {
             semantics_tokens = "partial",
           }
         }
+      })
+
+      lspconfig.neocmake.setup({
+        capabilities = capabilities,
+        cmd = { 'neocmakelsp', '--stdio' },
+        filetypes = { 'cmake' },
+        root_dir = function(fname)
+          -- return vim.fs.dirname(vim.fs.find('.git', {path = startpath, upward = true})[1])
+          return lspconfig.util.find_git_ancestor(fname)
+        end,
+
       })
 
       vim.api.nvim_create_autocmd('LspAttach', {
@@ -60,7 +83,6 @@ return {
             mode = mode or 'n'
             vim.keymap.set(mode, keys, func, { buffer = args.buf, desc = 'LSP: ' .. desc })
           end
-
           map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
           map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
           map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
