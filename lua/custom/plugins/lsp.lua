@@ -14,53 +14,72 @@ return {
     },
     config = function()
       local capabilities = require('blink.cmp').get_lsp_capabilities()
-      local lspconfig = require("lspconfig")
-      lspconfig.lua_ls.setup { capabilities = capabilities }
-      -- This is needed now. Wasn't needed during Advent of Neovim, but they changed the default to false
+
+      vim.lsp.enable('lua_ls')
       vim.diagnostic.config({
         virtual_text = true
       })
 
-      lspconfig.clangd.setup({
-        capabilities = capabilities,
-        cmd = {
-          'clangd',
-          '--background-index',
-          '--clang-tidy',
-          '--log=verbose',
-          '--query-driver=',
-          '--query-driver=arm-none-eabi-gcc'
-        },
-        root_markers = {
-          '.clangd',
-          'compile_commands.json'
-        },
-        filetypes = { 'c', 'cpp', 'h', 'hpp' },
-        init_options = {
-          fallbackFlags = { '-std=c++17' },
-        },
-      })
+      --- clangd / C / C++ / CPP / CXX LSP
+      vim.lsp.config('clangd',
+        {
+          capabilities = capabilities,
+          cmd = {
+            'clangd',
+            '--background-index',
+            '--clang-tidy',
+            '--log=verbose',
+            '--header-insertion=iwyu',
+            '--limit-results=0',
+            -- '--compile-commands-dir=build'
+          },
+          root_markers = {
+            '.clangd',
+            '.clang-tidy',
+            '.clang-format',
+            'compile_commands.json',
+            'compile_flags.txt',
+            '.git'
+          },
+          filetypes = { 'c', 'cpp', 'h', 'hpp' },
+          init_options = {
+            fallbackFlags = { '-std=c23' },
+          },
+        })
+      vim.lsp.enable('clangd')
 
-      lspconfig.zls.setup({
-        capabilities = capabilities,
-        cmd = { 'zls' },
-        settings = {
-          zls = {
-            semantics_tokens = "partial",
+      --- Zig LSP
+      vim.lsp.config('zls',
+        {
+          capabilities = capabilities,
+          cmd = { 'zls' },
+          settings = {
+            zls = {
+              semantics_tokens = "partial",
+            }
           }
-        }
-      })
+        })
+      vim.lsp.enable('zls')
 
-      lspconfig.neocmake.setup({
-        capabilities = capabilities,
-        cmd = { 'neocmakelsp', '--stdio' },
-        filetypes = { 'cmake' },
-        root_dir = function(fname)
-          -- return vim.fs.dirname(vim.fs.find('.git', {path = startpath, upward = true})[1])
-          return lspconfig.util.find_git_ancestor(fname)
-        end,
-
-      })
+      --- CMake LSP
+      vim.lsp.config('neocmakelsp',
+        {
+          capabilities = capabilities,
+          cmd = { 'neocmakelsp', '--stdio' },
+          filetypes = { 'cmake' },
+          root_dir = function(fname)
+            return vim.lsp.util.root_pattern(unpack({ '.git', 'build', 'cmake' }))(fname)
+          end,
+          init_options = {
+            format = {
+              enable = true
+            },
+            lint = {
+              enable = true
+            }
+          }
+        })
+      vim.lsp.enable('neocmakelsp')
 
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
