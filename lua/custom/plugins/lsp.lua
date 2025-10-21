@@ -43,7 +43,7 @@ return {
           },
           filetypes = { 'c', 'cpp', 'h', 'hpp' },
           init_options = {
-            fallbackFlags = { '-std=c23' },
+            fallbackFlags = { '-std=c++20' },
           },
         })
       vim.lsp.enable('clangd')
@@ -67,9 +67,9 @@ return {
           capabilities = capabilities,
           cmd = { 'neocmakelsp', '--stdio' },
           filetypes = { 'cmake' },
-          root_dir = function(fname)
-            return vim.lsp.util.root_pattern(unpack({ '.git', 'build', 'cmake' }))(fname)
-          end,
+          -- root_dir = function(fname)
+          --   return vim.lsp.util.root_pattern(unpack({ '.git', 'build', 'cmake' }))(fname)
+          -- end,
           init_options = {
             format = {
               enable = true
@@ -102,12 +102,18 @@ return {
             mode = mode or 'n'
             vim.keymap.set(mode, keys, func, { buffer = args.buf, desc = 'LSP: ' .. desc })
           end
-          map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
-          map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-          map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-          map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
-          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-          map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+
+          local builtin = require('telescope.builtin')
+
+          map('gd', builtin.lsp_definitions, '[G]oto [D]efinition')
+          map('gr', builtin.lsp_references, '[G]oto [R]eferences')
+          map('gI', builtin.lsp_implementations, '[G]oto [I]mplementation')
+          map('<leader>D', builtin.lsp_type_definitions, 'Type [D]efinition')
+          map('<leader>ds', builtin.lsp_document_symbols, '[D]ocument [S]ymbols')
+          map('<leader>ws', builtin.lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+
+          map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+          -- vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {buffer = 0})
 
           map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
