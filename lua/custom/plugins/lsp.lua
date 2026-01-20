@@ -31,6 +31,7 @@ return {
             '--log=verbose',
             '--header-insertion=iwyu',
             '--limit-results=0',
+            -- '--query-driver=arm-none-eabi'
             -- '--compile-commands-dir=build'
           },
           root_markers = {
@@ -52,7 +53,7 @@ return {
       vim.lsp.config('zls',
         {
           capabilities = capabilities,
-          cmd = { 'zls' },
+          cmd = { 'C:/tools/zls/zls/zig-out/bin/zls.exe' },
           settings = {
             zls = {
               semantics_tokens = "partial",
@@ -109,7 +110,7 @@ return {
           map('gr', builtin.lsp_references, '[G]oto [R]eferences')
           map('gI', builtin.lsp_implementations, '[G]oto [I]mplementation')
           map('<leader>D', builtin.lsp_type_definitions, 'Type [D]efinition')
-          map('<leader>ds', builtin.lsp_document_symbols, '[D]ocument [S]ymbols')
+          map('<leader>dS', builtin.lsp_document_symbols, '[D]ocument [S]ymbols')
           map('<leader>ws', builtin.lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
@@ -117,6 +118,8 @@ return {
 
           map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+
+          map('<leader>do', vim.diagnostic.open_float, 'Open Floating Diagnostics')
         end,
       })
     end,

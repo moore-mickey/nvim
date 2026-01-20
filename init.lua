@@ -1,12 +1,18 @@
 -- Mickey nvim
 
 require("custom.lazy")
+-- require("custom.pack")
 
-vim.opt.shiftwidth = 4
-vim.opt.clipboard = "unnamedplus"
-vim.opt.number = true
-vim.opt.relativenumber = true
-vim.opt.expandtab = true
+local vo = vim.opt
+
+vo.shiftwidth = 4
+vo.clipboard = "unnamedplus"
+vo.number = true
+vo.relativenumber = true
+vo.expandtab = true
+vim.opt_global.scrolloff = 10
+vim.o.wrap = false
+
 
 vim.keymap.set("n", "<space><space>x", "<cmd>source %<CR>")
 vim.keymap.set("n", "<space>x", ":.lua<CR>")
@@ -28,8 +34,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 vim.api.nvim_create_autocmd('TermOpen', {
   group = vim.api.nvim_create_augroup('custom-term-open', { clear = true }),
   callback = function()
-    vim.opt.number = false
-    vim.opt.relativenumber = false
+    vo.number = false
+    vo.relativenumber = false
   end,
 })
 
