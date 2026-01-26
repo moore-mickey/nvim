@@ -119,7 +119,12 @@ return {
           map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
-          map('<leader>do', vim.diagnostic.open_float, 'Open Floating Diagnostics')
+          vim.keymap.set('n', '<leader>do', function()
+            vim.diagnostic.open_float { border = "single", max_width = 120, max_height = 50 }
+          end, { desc = 'Floating [D]iagnostics [O]pen' })
+          vim.keymap.set('n', '<leader>oh', function()
+            vim.lsp.buf.hover { border = "single", max_width = 120, max_height = 50 }
+          end, { desc = '[O]pen [H]over' })
         end,
       })
     end,

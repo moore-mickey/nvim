@@ -12,6 +12,8 @@ vo.relativenumber = true
 vo.expandtab = true
 vim.opt_global.scrolloff = 10
 vim.o.wrap = false
+vo.smartcase = true
+vo.ignorecase = true
 
 
 vim.keymap.set("n", "<space><space>x", "<cmd>source %<CR>")

@@ -33,6 +33,7 @@ return {
           cwd = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy")
         }
       end)
+      vim.keymap.set("n", "<space>ff", require('telescope.builtin').current_buffer_fuzzy_find)
 
       require "custom.telescope.multigrep".setup()
     end
