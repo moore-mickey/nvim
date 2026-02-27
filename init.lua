@@ -23,6 +23,11 @@ vim.keymap.set("v", "<space>x", ":lua<CR>")
 vim.keymap.set("n", "<M-j>", "<cmd>cnext<CR>")
 vim.keymap.set("n", "<M-k>", "<cmd>cprev<CR>")
 
+-- vim.keymap.set("n", "<Left>", "<:wincmd h<CR>")
+-- vim.keymap.set("n", "<Right>", "<:wincmd l<CR>")
+-- vim.keymap.set("n", "<Up>", "<:wincmd k<CR>")
+-- vim.keymap.set("n", "<Down>", "<:wincmd j<CR>")
+
 -- Highlight when yanking (copying) text
 -- Try it with `yap` in normal mode
 -- See `:help vim.highlight.on_yank()`
