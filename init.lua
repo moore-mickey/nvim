@@ -30,12 +30,12 @@ vim.keymap.set("n", "<M-k>", "<cmd>cprev<CR>")
 
 -- Highlight when yanking (copying) text
 -- Try it with `yap` in normal mode
--- See `:help vim.highlight.on_yank()`
+-- See `:help vim.hl.on_yank()`
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking text',
   group = vim.api.nvim_create_augroup('highlight-yank', { clear = true }),
   callback = function()
-    vim.highlight.on_yank()
+    vim.hl.on_yank()
   end,
 })
 vim.api.nvim_create_autocmd('TermOpen', {
