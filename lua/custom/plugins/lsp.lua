@@ -35,14 +35,14 @@ return {
             -- '--compile-commands-dir=build'
           },
           root_markers = {
+            -- '.clang-tidy',
+            -- '.clang-format',
+            -- 'compile_commands.json',
             '.clangd',
-            '.clang-tidy',
-            '.clang-format',
-            'compile_commands.json',
-            'compile_flags.txt',
-            '.git'
+            -- 'compile_flags.txt',
+            -- '.git'
           },
-          filetypes = { 'c', 'cpp', 'h', 'hpp' },
+          filetypes = { 'c', 'cpp', },
           init_options = {
             fallbackFlags = { '-std=c++20' },
           },
