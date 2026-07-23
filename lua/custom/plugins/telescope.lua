@@ -35,6 +35,10 @@ return {
       end)
       vim.keymap.set("n", "<space>ff", require('telescope.builtin').current_buffer_fuzzy_find)
 
+      vim.keymap.set("n", "<space>fp", require('telescope.builtin').git_files)
+      vim.keymap.set("n", "<space>fgs", require('telescope.builtin').git_status)
+      vim.keymap.set("n", "<space>ld", require('telescope.builtin').diagnostics)
+
       require "custom.telescope.multigrep".setup()
     end
   }
