@@ -1,1 +1,3 @@
-lazy-lock.json
+# vim.pack writes its lockfile to <stdpath('config')>/nvim-pack-lock.json, i.e.
+# into this repo. It is deliberately NOT ignored -- commit it after your first
+# start so plugin revisions are reproducible across machines.

@@ -1,7 +1,6 @@
 -- Mickey nvim
 
-require("custom.lazy")
--- require("custom.pack")
+require("custom.pack")
 
 local vo = vim.opt
 
