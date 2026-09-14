@@ -141,6 +141,7 @@ for _, mod in ipairs({
   "doxygen",
   "mason",
   "dap",
+  "cortex_debug",
 }) do
   require("custom.plugins." .. mod)
 end
