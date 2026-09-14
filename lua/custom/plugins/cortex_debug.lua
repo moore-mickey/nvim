@@ -72,10 +72,51 @@ cortex.setup({
 -- preload moves the console to stderr; see the script for the gory details.
 local console_fix = vim.fs.joinpath(vim.fn.stdpath("config"), "scripts", "cortex-debug-console-to-stderr.js")
 
+-- The adapter interpolates the binary's path straight into the MI command
+-- `-file-exec-and-symbols "<path>"` with no escaping, and gdb reads that string
+-- with C escape rules. It also resolves a relative path with node's path.join
+-- first, which on Windows hands back "C:\Projects\..." -- gdb then swallows the
+-- \P, \c and \a and reports the file missing. Absolute and forward-slashed
+-- sidesteps both: path.isAbsolute() short-circuits the join, and there is
+-- nothing left for gdb to treat as an escape.
+---@param path string
+---@param cwd string?
+---@return string
+local function gdb_path(path, cwd)
+  path = vim.fs.normalize(path)
+  if cwd and not path:match("^%a:") and not path:match("^/") then
+    path = vim.fs.normalize(vim.fs.joinpath(vim.fs.normalize(cwd), path))
+  end
+  return path
+end
+
+---@param config dap.Configuration
+local function fix_gdb_paths(config)
+  if type(config.executable) == "string" then
+    config.executable = gdb_path(config.executable, config.cwd)
+  end
+  -- `symbolFiles` is the multi-binary alternative to `executable`; its entries
+  -- reach gdb through the same unescaped interpolation.
+  for _, entry in ipairs(config.symbolFiles or {}) do
+    if type(entry.file) == "string" then
+      entry.file = gdb_path(entry.file, config.cwd)
+    end
+  end
+end
+
 local cortex_adapter = dap.adapters["cortex-debug"]
 dap.adapters["cortex-debug"] = function(callback, config)
   cortex_adapter(function(adapter)
     adapter.args = vim.list_extend({ "--require", console_fix }, adapter.args)
+    -- Hook in ahead of the plugin's own validation, which runs here too. This
+    -- is the first point where nvim-dap has finished expanding
+    -- ${workspaceFolder} and evaluating function options, so `cwd` is a real
+    -- directory and `executable` a real path.
+    local enrich_config = adapter.enrich_config
+    adapter.enrich_config = function(conf, on_config)
+      fix_gdb_paths(conf)
+      enrich_config(conf, on_config)
+    end
     callback(adapter)
   end, config)
 end
