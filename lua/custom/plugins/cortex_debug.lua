@@ -66,6 +66,20 @@ cortex.setup({
   extension_path = extension_path(),
 })
 
+-- The adapter bundle console.log()s in a handful of places -- notably every
+-- time the PEmicro server type resolves its binary -- which lands in the middle
+-- of the DAP stream it carries on stdout and kills nvim-dap's rpc parser. The
+-- preload moves the console to stderr; see the script for the gory details.
+local console_fix = vim.fs.joinpath(vim.fn.stdpath("config"), "scripts", "cortex-debug-console-to-stderr.js")
+
+local cortex_adapter = dap.adapters["cortex-debug"]
+dap.adapters["cortex-debug"] = function(callback, config)
+  cortex_adapter(function(adapter)
+    adapter.args = vim.list_extend({ "--require", console_fix }, adapter.args)
+    callback(adapter)
+  end, config)
+end
+
 --- Launch config for a PEmicro probe. `device` is required by the `pe` server
 --- type; run `pegdbserver_console.exe -devicelist` for the accepted names.
 ---@param overrides table
