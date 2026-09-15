@@ -55,32 +55,9 @@ dap.configurations.c = {
 }
 
 
--- local dap_cortex_debug = require("dap-cortex-debug")
--- dap_cortex_debug.setup {
---   extension_path = "C:/Users/bmoore/.vscode/extensions/marus25.cortex-debug-1.12.1/"
--- }
--- dap.configurations.cpp = {
---   dap_cortex_debug.openocd_config {
---     cwd = "${workspaceFolder}",
---     executable = "${workspaceFolder}/build/application/cmc800/default/cmc800_default_S32K311_CMC800_freeRTOS.elf",
---     name = "Debug S32K311 DevKit with PE",
---     request = "launch",
---     type = "cortex-debug-debug",
---     runToEntryPoint = "main",
---     showDevDebugOutput = "parsed",
---     serverType = "pe",
---     device = "NXP_S32K3xx_S32K311",
---     svdFile = "${workspaceFolder}/S32K311_M7.svd",
---     serverPath = "pegdbserver_console.exe",
---     gdbTarget = "localhost:7224",
---     gdbPath = "arm-none-eabi-gdb.exe"
---   },
--- }
--- dap.configurations.c = dap.configurations.cpp
---
 vim.keymap.set("n", "<leader>dt", dap.toggle_breakpoint)
 vim.keymap.set("n", "<leader>dR", dap.run_to_cursor)
-vim.keymap.set("n", "<leader>d?", function() require("dapui").eval(nil, { enter = true }) end) -- Evaluate var under cursor
+vim.keymap.set("n", "<leader>dh", function() require("dapui").eval(nil, { enter = true }) end) -- Evaluate var under cursor
 vim.keymap.set("n", "<leader>dc", dap.continue)
 vim.keymap.set("n", "<leader>di", dap.step_into)
 vim.keymap.set("n", "<leader>do", dap.step_over)
