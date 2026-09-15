@@ -57,7 +57,7 @@ dap.configurations.c = {
 
 vim.keymap.set("n", "<leader>dt", dap.toggle_breakpoint)
 vim.keymap.set("n", "<leader>dR", dap.run_to_cursor)
-vim.keymap.set("n", "<leader>d?", function() require("dapui").eval(nil, { enter = true }) end) -- Evaluate var under cursor
+vim.keymap.set("n", "<leader>dh", function() require("dapui").eval(nil, { enter = true }) end) -- Evaluate var under cursor
 vim.keymap.set("n", "<leader>dc", dap.continue)
 vim.keymap.set("n", "<leader>di", dap.step_into)
 vim.keymap.set("n", "<leader>do", dap.step_over)
