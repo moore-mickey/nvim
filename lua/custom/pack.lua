@@ -113,6 +113,10 @@ vim.pack.add({
   gh("jay-babu/mason-nvim-dap.nvim"),
   gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
   gh("jedrzejboczar/nvim-dap-cortex-debug"),
+
+  -- Claude Code in a terminal split. Needs plenary (above) and the `claude`
+  -- CLI on PATH.
+  gh("greggh/claude-code.nvim"),
 }, {
   -- Install without prompting, the way lazy.nvim used to. Progress is still
   -- reported, and `vim.pack.update()` always asks before changing anything.
@@ -142,6 +146,7 @@ for _, mod in ipairs({
   "mason",
   "dap",
   "cortex_debug",
+  "claude_code",
 }) do
   require("custom.plugins." .. mod)
 end
