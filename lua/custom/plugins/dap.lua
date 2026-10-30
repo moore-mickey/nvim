@@ -64,6 +64,9 @@ vim.keymap.set("n", "<leader>do", dap.step_over)
 vim.keymap.set("n", "<leader>du", dap.step_out)
 -- vim.keymap.set("n", "???", dap.step_back)
 vim.keymap.set("n", "<leader>ds", dap.restart)
+vim.keymap.set("n", "<leader>dp", dap.stop)
+
+vim.keymap.set("n", "<leader>dT", ui.toggle)
 
 dap.listeners.before.attach.dapui_config = function()
   ui.open()

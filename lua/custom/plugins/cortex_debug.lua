@@ -51,15 +51,15 @@ end
 -- PEmicro's GDB server ships inside S32 Design Studio.
 local function pemicro_server()
   return vim.env.PEMICRO_GDBSERVER
-    or newest_match("C:/NXP/S32DS.*/eclipse/plugins/com.pemicro.debug.gdbjtag.pne_*/win32/pegdbserver_console.exe")
-    or "pegdbserver_console.exe"
+      or newest_match("C:/NXP/S32DS.*/eclipse/plugins/com.pemicro.debug.gdbjtag.pne_*/win32/pegdbserver_console.exe")
+      or "pegdbserver_console.exe"
 end
 
 -- Bare-metal toolchain. cortex-debug joins this with `toolchainPrefix` and
 -- appends `.exe` itself, so this is the `bin` directory, not the gdb binary.
 local function arm_toolchain()
   return vim.env.ARM_TOOLCHAIN_PATH
-    or newest_match("C:/cab_repos/CMakeForge/Compilers/Windows/gcc-arm-none-eabi-*/bin", "backup")
+      or newest_match("C:/cab_repos/CMakeForge/Compilers/Windows/gcc-arm-none-eabi-*/bin", "backup")
 end
 
 cortex.setup({
@@ -108,6 +108,13 @@ local cortex_adapter = dap.adapters["cortex-debug"]
 dap.adapters["cortex-debug"] = function(callback, config)
   cortex_adapter(function(adapter)
     adapter.args = vim.list_extend({ "--require", console_fix }, adapter.args)
+    -- The adapter answers `initialize` only once it has started up, which with
+    -- the PEmicro server routinely takes longer than nvim-dap's 4 s default.
+    -- Past this timeout nvim-dap just shows a "didn't respond" warning; the
+    -- session carries on regardless.
+    adapter.options = vim.tbl_extend("force", adapter.options or {}, {
+      initialize_timeout_sec = 30,
+    })
     -- Hook in ahead of the plugin's own validation, which runs here too. This
     -- is the first point where nvim-dap has finished expanding
     -- ${workspaceFolder} and evaluating function options, so `cwd` is a real
