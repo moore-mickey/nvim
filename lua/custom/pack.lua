@@ -113,6 +113,7 @@ vim.pack.add({
   gh("jay-babu/mason-nvim-dap.nvim"),
   gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
   gh("jedrzejboczar/nvim-dap-cortex-debug"),
+  gh("stevearc/overseer.nvim"), -- runs .vscode/tasks.json and dap's preLaunchTask
 
   -- Claude Code in a terminal split. Needs plenary (above) and the `claude`
   -- CLI on PATH.
@@ -131,7 +132,8 @@ if not fzf_native_is_built() then
 end
 
 -- `vim.pack` has no dependency graph, so configure in dependency order:
--- treesitter before neogen, blink before lsp (capabilities), mason before dap.
+-- treesitter before neogen, blink before lsp (capabilities), mason before dap,
+-- dap before overseer (it hooks preLaunchTask into dap's listeners).
 for _, mod in ipairs({
   "colorscheme",
   "mini",
@@ -146,6 +148,7 @@ for _, mod in ipairs({
   "mason",
   "dap",
   "cortex_debug",
+  "overseer",
   "claude_code",
 }) do
   require("custom.plugins." .. mod)
