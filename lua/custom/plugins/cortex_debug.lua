@@ -204,10 +204,11 @@ local function find_svd()
 end
 
 -- Fallback for projects with no launch.json: find the firmware ourselves.
+-- Shares the launch.json choice, so :LaunchTarget switches both.
 local launch = M.pe_config({
   name = "Cortex: launch with PEmicro",
   device = "NXP_S32K3xx_S32K311",
-  executable = launch_target.pick,
+  executable = launch_target.get,
   svdFile = find_svd,
 })
 
