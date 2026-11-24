@@ -14,6 +14,7 @@
 
 local dap = require("dap")
 local cortex = require("dap-cortex-debug")
+local launch_target = require("custom.launch_target")
 
 local M = {}
 
@@ -198,34 +199,15 @@ dap.providers.configs["dap.launch.json"] = function(bufnr)
   return configs
 end
 
--- Fallback for projects with no launch.json: find the firmware ourselves.
-local function pick_elf()
-  local cwd = vim.fn.getcwd()
-  local elfs = vim.fn.glob(cwd .. "/build/**/*.elf", false, true)
-  if #elfs == 0 then
-    elfs = vim.fn.glob(cwd .. "/**/*.elf", false, true)
-  end
-  if #elfs == 0 then
-    return vim.fn.input("Path to .elf: ", cwd .. "/", "file")
-  elseif #elfs == 1 then
-    return elfs[1]
-  end
-  local co, ismain = coroutine.running()
-  local ui = require("dap.ui")
-  local pick = (co and not ismain) and ui.pick_one or ui.pick_one_sync
-  return pick(elfs, "Select .elf: ", function(path)
-    return vim.fn.fnamemodify(path, ":.")
-  end) or dap.ABORT
-end
-
 local function find_svd()
   return vim.fn.glob(vim.fn.getcwd() .. "/*.svd", false, true)[1]
 end
 
+-- Fallback for projects with no launch.json: find the firmware ourselves.
 local launch = M.pe_config({
   name = "Cortex: launch with PEmicro",
   device = "NXP_S32K3xx_S32K311",
-  executable = pick_elf,
+  executable = launch_target.pick,
   svdFile = find_svd,
 })
 
