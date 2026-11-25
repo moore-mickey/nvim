@@ -1,5 +1,6 @@
 local dap = require("dap")
 local ui = require("dapui")
+local launch_target = require("custom.launch_target")
 
 -- `mason.setup()` lives in custom.plugins.mason, which pack.lua loads first.
 require("mason-nvim-dap").setup();
@@ -54,6 +55,30 @@ dap.configurations.c = {
   },
 }
 
+-- launch.json names the binary with CMake Tools' launch target, which nvim-dap
+-- cannot resolve. Swap in a function, so the pick happens only once a config
+-- is actually run rather than whenever the config list is read.
+local function defer_launch_target(value)
+  if type(value) == "string" and value:find(launch_target.VARIABLE, 1, true) then
+    return function()
+      return launch_target.expand(value)
+    end
+  elseif type(value) == "table" then
+    for key, item in pairs(value) do
+      value[key] = defer_launch_target(item)
+    end
+  end
+  return value
+end
+
+local read_launch_json = dap.providers.configs["dap.launch.json"]
+dap.providers.configs["dap.launch.json"] = function(bufnr)
+  local configs = read_launch_json(bufnr)
+  for _, config in ipairs(configs) do
+    defer_launch_target(config)
+  end
+  return configs
+end
 
 vim.keymap.set("n", "<leader>dt", dap.toggle_breakpoint)
 vim.keymap.set("n", "<leader>dR", dap.run_to_cursor)
